@@ -1,0 +1,65 @@
+{
+  "_about": "Each system has a role: 'hr' is the system of record for people, 'app' is the application under review. An exposed endpoint may also carry 'as' (Revoke's standard tool name, when Synapse named the tool after the app's own code), 'fields' ({revoke field: app field}) and 'values' ({revoke field: {app value: revoke value}}); see docs/ADDING_AN_APP.md. Which endpoints of each legacy system Synapse turns into MCP tools, and why. scripts/build_mcp.py passes only the 'expose' list (plus 'live_demo' after the live update) to `synapse build --endpoints`. 'access' drives the agent's approval gate: write tools never run without a human approving the exact call.",
+  "systems": {
+    "peoplehub": {
+      "path": "systems/peoplehub",
+      "server_name": "peoplehub",
+      "role": "hr",
+      "namespace": "hr",
+      "port": 8201,
+      "expose": [
+        {"endpoint": "POST /employees/lookup", "tool": "lookup_employees_by_email", "access": "read",
+         "why": "The join between the two systems. Takes every account email at once and matches past emails too, so a renamed person (maiden name) is still found."},
+        {"endpoint": "GET /employees/leavers/since/{since_date}", "tool": "list_leavers_since", "access": "read",
+         "why": "Who left and when. Includes current status, so rehires and people serving notice are not mistaken for leavers."},
+        {"endpoint": "GET /employees/job-changes/since/{since_date}", "tool": "list_job_changes_since", "access": "read",
+         "why": "Movers: the old and new job, needed to spot privileges that belonged to the old job."},
+        {"endpoint": "GET /employees/{employee_id}", "tool": "get_employee", "access": "read",
+         "why": "Resolves the named owner of a service account and checks that the owner still works here."},
+        {"endpoint": "GET /managers/{employee_id}/reports", "tool": "list_direct_reports", "access": "read",
+         "why": "Routes each finding to the manager who must certify or remove the access."}
+      ],
+      "withheld": [
+        {"endpoint": "GET /employees/{employee_id}/compensation", "why": "Salary data. An access review never needs it (data minimisation)."},
+        {"endpoint": "POST /employees", "why": "Creating employees is HR's job, not a reviewer's."},
+        {"endpoint": "POST /admin/reseed", "why": "Maintenance: would wipe HR changes."},
+        {"endpoint": "GET /health", "why": "Infrastructure probe, no value to the agent."}
+      ],
+      "live_demo": []
+    },
+    "ledgerly": {
+      "path": "systems/ledgerly",
+      "server_name": "ledgerly",
+      "role": "app",
+      "namespace": "ledgerly",
+      "port": 8202,
+      "expose": [
+        {"endpoint": "GET /users/active", "tool": "list_active_accounts", "access": "read",
+         "why": "The population under review: every active account with its email and roles in one call."},
+        {"endpoint": "GET /users/{username}", "tool": "get_account", "access": "read",
+         "why": "Detail for one account, and the verification read after any change."},
+        {"endpoint": "GET /roles", "tool": "get_role_catalog", "access": "read",
+         "why": "What each role allows and which job titles normally need it: the yardstick for movers."},
+        {"endpoint": "GET /roles/{role}/members", "tool": "list_role_members", "access": "read",
+         "why": "Answers 'who can approve payments?' in one call."},
+        {"endpoint": "GET /sod/rules", "tool": "list_sod_rules", "access": "read",
+         "why": "Segregation-of-duties rules, so conflicts come from the company's own policy, not the model's opinion."},
+        {"endpoint": "POST /users/{username}/disable", "tool": "disable_account", "access": "write",
+         "why": "Remediation for leavers. Reversible and keeps history. Runs only after a human approves the exact list."},
+        {"endpoint": "POST /users/{username}/roles/revoke", "tool": "revoke_role", "access": "write",
+         "why": "Remediation for movers and SoD conflicts: removes one role, keeps the account. Human-approved only."}
+      ],
+      "withheld": [
+        {"endpoint": "DELETE /users/{username}", "why": "Irreversible and deletes the audit history that auditors need. Disabling is enough."},
+        {"endpoint": "POST /users", "why": "Provisioning new access is the opposite of a review; it stays with the Ledgerly admins."},
+        {"endpoint": "POST /payments/{payment_id}/approve", "why": "Moves money. No reason for an access reviewer to have it."},
+        {"endpoint": "POST /admin/reseed", "why": "Maintenance: would wipe the ledger's account changes."},
+        {"endpoint": "GET /health", "why": "Infrastructure probe, no value to the agent."}
+      ],
+      "live_demo": [
+        {"endpoint": "GET /users/{username}/activity", "tool": "get_account_activity", "access": "read",
+         "why": "Added live in the demo. Ledgerly always logged sign-ins and approvals but never exposed them. With it the agent can tell stale access from access USED after someone left."}
+      ]
+    }
+  }
+}

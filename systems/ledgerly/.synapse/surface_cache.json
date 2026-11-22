@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "repo_hash": "c8dd0178e60bbf3d042f98de9aafb7d009b012f110a406d749f0a50c52728a2a",
+  "language": "python",
+  "framework": "fastapi",
+  "package_import_root": "main",
+  "captured_functions": false,
+  "files": {
+    "undefined": {}
+  },
+  "lines_scanned": 235,
+  "updated_at": 1795588711401
+}

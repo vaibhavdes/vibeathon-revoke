@@ -1,0 +1,12 @@
+{
+  "name": "revoke",
+  "version": "1.0.0",
+  "description": "Synapse CLI, used to generate the MCP servers for PeopleHub and Ledgerly.",
+  "scripts": {
+    "synapse": "synapse"
+  },
+  "devDependencies": {
+    "@2ndbrainlabs-ai/synapse-cli": "^0.1.9"
+  },
+  "private": true
+}
