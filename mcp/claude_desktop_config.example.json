@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "peoplehub": {
+      "command": "/ABSOLUTE/PATH/TO/revoke/.venv/bin/python",
+      "args": ["/ABSOLUTE/PATH/TO/revoke/systems/peoplehub/synapse_auto_server.py"],
+      "env": { "ENDPOINT_BASE_URL": "http://127.0.0.1:8201" }
+    },
+    "ledgerly": {
+      "command": "/ABSOLUTE/PATH/TO/revoke/.venv/bin/python",
+      "args": ["/ABSOLUTE/PATH/TO/revoke/systems/ledgerly/synapse_auto_server.py"],
+      "env": { "ENDPOINT_BASE_URL": "http://127.0.0.1:8202" }
+    }
+  }
+}
