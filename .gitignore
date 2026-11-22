@@ -1,0 +1,27 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# node
+node_modules/
+.npm-cache/
+
+# runtime state
+runtime/
+evidence/runs/
+*.log
+.DS_Store
+
+# app state written at runtime
+systems/*/.state.json
+systems/*/.synapse/discover/
+eval/results/*.json
+!eval/results/baseline.json
+
