@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.git
+.venv
+node_modules
+runtime
+evidence/runs
+**/__pycache__
+.pytest_cache
+systems/*/.state.json
