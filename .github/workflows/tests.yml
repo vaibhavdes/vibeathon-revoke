@@ -1,0 +1,55 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Answer key matches the planted cases
+        run: python -m eval.expected
+      - name: Offline tests (systems, policy, grounding, agent loop with a scripted model)
+        run: pytest -q
+
+  container:
+    # The Docker image: builds, starts both systems and the console, serves 12 Synapse tools,
+    # replays a recorded run, and runs the live update (Synapse rebuild inside the container).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: docker build -t revoke .
+      - run: docker run -d --name revoke -p 7860:7860 revoke
+      - name: Console up, both systems up, 12 MCP tools, replay only
+        run: |
+          for i in $(seq 1 60); do curl -sf localhost:7860/api/recordings >/dev/null && break; sleep 2; done
+          curl -s localhost:7860/api/state > state.json || true
+          python3 -c "
+          import json, sys
+          raw = open('state.json').read()
+          try:
+              d = json.loads(raw)
+              assert all(s['up'] for s in d['systems']), d['systems']
+              assert len(d['tools']) == 12, d['tools_error']
+              assert d['can_ask'] is False and d['hosted'] is True
+          except Exception as exc:
+              print('::error title=state check::' + (repr(exc) + ' ' + raw[:1500]).replace(chr(10), '%0A'))
+              sys.exit(1)
+          print('ok', len(d['tools']), 'tools')"
+      - name: Replay a recorded run
+        run: |
+          id=$(curl -sf localhost:7860/api/recordings | python3 -c "import json,sys; print(json.load(sys.stdin)['recordings'][0]['id'])")
+          curl -sf -X POST "localhost:7860/api/replay/$id?speed=10"
+          curl -sf "localhost:7860/evidence/$id/manifest.json" > /dev/null
+      - name: Live update rebuilds with Synapse inside the container (12 -> 13 tools), then reset
+        run: |
+          sleep 15
+          curl -sf -X POST localhost:7860/api/live-update/apply | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['output'][-400:]); assert d['ok'] and d['applied']"
+          curl -sf localhost:7860/api/state | python3 -c "import json,sys; assert len(json.load(sys.stdin)['tools']) == 13"
+          curl -sf -X POST localhost:7860/api/reset | python3 -c "import json,sys; assert json.load(sys.stdin)['ok']"
+      - if: always()
+        run: docker logs revoke
+      - if: failure()
+        run: echo "::error title=container log::$(docker logs revoke 2>&1 | tail -60 | sed ':a;N;$!ba;s/\n/%0A/g')"
