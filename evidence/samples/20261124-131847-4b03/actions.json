@@ -1,0 +1,132 @@
+[
+  {
+    "id": "A1",
+    "tool": "ledgerly__disable_account",
+    "arguments": {
+      "username": "ashah",
+      "reason": "Leaver: terminated 2026-09-30 per PeopleHub"
+    },
+    "summary": "Disable Ledgerly account ashah",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A2",
+    "tool": "ledgerly__disable_account",
+    "arguments": {
+      "username": "miyer",
+      "reason": "Leaver: terminated 2026-08-14 per PeopleHub"
+    },
+    "summary": "Disable Ledgerly account miyer",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A3",
+    "tool": "ledgerly__disable_account",
+    "arguments": {
+      "username": "pnair",
+      "reason": "Leaver: terminated 2026-10-17 per PeopleHub"
+    },
+    "summary": "Disable Ledgerly account pnair",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A4",
+    "tool": "ledgerly__disable_account",
+    "arguments": {
+      "username": "vrao",
+      "reason": "Leaver: terminated 2026-11-14 per PeopleHub"
+    },
+    "summary": "Disable Ledgerly account vrao",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A5",
+    "tool": "ledgerly__disable_account",
+    "arguments": {
+      "username": "rpatel",
+      "reason": "Leaver: terminated 2026-11-03 per PeopleHub"
+    },
+    "summary": "Disable Ledgerly account rpatel",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A6",
+    "tool": "ledgerly__revoke_role",
+    "arguments": {
+      "username": "rgupta",
+      "reason": "Mover retained privilege: job change 2026-08-01 to Sales Executive, AP_CLERK not typical for new title per role catalog and PeopleHub",
+      "role": "AP_CLERK"
+    },
+    "summary": "Remove role AP_CLERK from rgupta",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A7",
+    "tool": "ledgerly__revoke_role",
+    "arguments": {
+      "username": "rgupta",
+      "reason": "Mover retained privilege: job change 2026-08-01 to Sales Executive, PAYMENT_APPROVER not typical for new title per role catalog and PeopleHub",
+      "role": "PAYMENT_APPROVER"
+    },
+    "summary": "Remove role PAYMENT_APPROVER from rgupta",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A8",
+    "tool": "ledgerly__revoke_role",
+    "arguments": {
+      "username": "fsheikh",
+      "reason": "Mover retained privilege: job change 2026-09-15 to HR Business Partner, TREASURY_RELEASE not typical for new title per role catalog and PeopleHub",
+      "role": "TREASURY_RELEASE"
+    },
+    "summary": "Remove role TREASURY_RELEASE from fsheikh",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  },
+  {
+    "id": "A9",
+    "tool": "ledgerly__revoke_role",
+    "arguments": {
+      "username": "nverma",
+      "reason": "Mover retained privilege: job change 2026-07-20 to Procurement Specialist, GL_ADMIN not typical for new title per role catalog and PeopleHub",
+      "role": "GL_ADMIN"
+    },
+    "summary": "Remove role GL_ADMIN from nverma",
+    "status": "pending",
+    "result": {},
+    "verification": {},
+    "decided_by": "",
+    "decided_at": ""
+  }
+]

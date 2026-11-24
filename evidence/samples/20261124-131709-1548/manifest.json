@@ -1,0 +1,13 @@
+{
+  "run_id": "20261124-131709-1548",
+  "review_date": "2026-11-24",
+  "generated_at": "2026-11-24T13:17:32Z",
+  "files": {
+    "trace.jsonl": "fa6710185537d9250128f362ab49737e65a3225b607bfd2aa937a26f5509dfda",
+    "findings.csv": "48e022aed57b23650b1fb0d6de880c1af3c32e8fa488475d1e1520659c9de625",
+    "actions.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "report.md": "575d273b1de3f995c38e85dc8fd4af6b8b9a1e1112f48582e7d8a248df58f022",
+    "certifications.md": "3dbec2ba4e6917c9ca307c33a6f55a6b2b4d10c0506904ea8ff1ab4aed589ce3",
+    "events.jsonl": "0a9f2cc7f01e9919865a1bbb878835f7ebfccbbcedd4a493f2d4422171c10240"
+  }
+}
