@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Revoke · Access reviews</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23b42318'/><path d='M10 16h12' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <div>
+        <div class="brand-name">Revoke</div>
+        <div class="brand-sub">Access reviews for apps your identity tools can't reach</div>
+      </div>
+    </div>
+    <div class="status" id="status">
+      <span class="chip" id="chip-peoplehub"><i></i>PeopleHub</span>
+      <span class="chip" id="chip-ledgerly"><i></i>Ledgerly</span>
+      <span class="chip plain" id="chip-tools">MCP tools: …</span>
+      <span class="chip plain" id="chip-date">Review date …</span>
+      <span class="chip plain" id="chip-model">Model: …</span>
+    </div>
+    <div class="top-actions">
+      <button class="ghost" id="btn-new" title="Forget this conversation">New conversation</button>
+      <button class="ghost" id="btn-reset" title="Restore seed data and remove the live update">Reset</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="chat" aria-label="Conversation">
+      <div class="messages" id="messages">
+        <div class="intro" id="intro">
+          <h1>Who still has access they shouldn't?</h1>
+          <p>Revoke reviews <b>Ledgerly</b>, Tamarind's in-house finance app, against <b>PeopleHub</b>, the HR system.
+            Neither app was changed: <b>Synapse</b> turned each one's existing API into an MCP server, and the agent works only through those tools.
+            It can read freely. It can only <i>propose</i> changes; you approve them.</p>
+          <div class="suggest" id="suggest">
+            <button data-q="Who has left the company but still has an active Ledgerly account, and what can they still do?">Leavers with access</button>
+            <button data-q="Who changed jobs in the last six months but kept Ledgerly privileges from their old job?">Movers keeping old privileges</button>
+            <button data-q="Who holds conflicting roles in Ledgerly, and which manager must certify each one?">Segregation of duties</button>
+            <button data-q="Which Ledgerly accounts are dormant or shared, so nobody is really using or accountable for them?">Dormant &amp; shared</button>
+            <button data-q="Did any leaver's Ledgerly account do anything after their last day?">Used after leaving?</button>
+            <button data-q="Disable the Ledgerly accounts of everyone who has left, and remove roles that movers kept from their old job.">Fix it</button>
+          </div>
+          <div class="recordings hidden" id="recordings">
+            <p class="muted">Past runs, replayed from their evidence packs:</p>
+            <div class="suggest"></div>
+          </div>
+        </div>
+      </div>
+      <form class="composer" id="composer">
+        <textarea id="question" rows="2" placeholder="Ask about access in Ledgerly…" aria-label="Question"></textarea>
+        <button type="submit" id="send">Ask</button>
+      </form>
+    </section>
+
+    <section class="side" aria-label="Details">
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="trace" class="active">Live trace</button>
+        <button role="tab" data-tab="findings">Findings <span class="badge" id="n-findings">0</span></button>
+        <button role="tab" data-tab="approvals">Approvals <span class="badge warn" id="n-pending">0</span></button>
+        <button role="tab" data-tab="synapse">Synapse</button>
+      </nav>
+
+      <div class="panel active" id="panel-trace">
+        <p class="hint">Every call the agent makes, as it happens. Teal is PeopleHub, indigo is Ledgerly.</p>
+        <ol class="trace" id="trace"></ol>
+      </div>
+
+      <div class="panel" id="panel-findings">
+        <div class="sev-summary" id="sev-summary"></div>
+        <p class="hint">Facts in this table are copied from tool results by code, not written by the model.</p>
+        <div class="table-wrap"><table class="findings">
+          <thead><tr><th>Severity</th><th>Finding</th><th>Account</th><th>Verified facts</th><th>Certifier</th><th>Recommended action</th></tr></thead>
+          <tbody id="findings"><tr class="empty"><td colspan="6">Ask a question to start a review.</td></tr></tbody>
+        </table></div>
+        <a class="evidence-link hidden" id="evidence-link" target="_blank">Open the evidence pack →</a>
+      </div>
+
+      <div class="panel" id="panel-approvals">
+        <p class="hint">The agent has no write access. Each change below runs only if you approve it, through the Synapse-generated tool shown, and is then verified by reading Ledgerly again.</p>
+        <div id="pending"></div>
+        <div class="approve-bar hidden" id="approve-bar">
+          <label>Approver <input id="approver" value="" placeholder="Your name"></label>
+          <button class="danger" id="btn-approve">Approve selected</button>
+          <button class="ghost" id="btn-reject">Reject selected</button>
+        </div>
+        <h3 class="sub">Decided</h3>
+        <div id="decided"><p class="muted">Nothing decided yet.</p></div>
+      </div>
+
+      <div class="panel" id="panel-synapse">
+        <div class="live-box">
+          <div>
+            <h3>Connectors</h3>
+            <p>Each system's existing code becomes an MCP server with <code>synapse build --local --auto</code>,
+              exposing only the endpoints listed below. Neither system is modified.</p>
+          </div>
+          <div class="live-actions">
+            <button class="ghost" id="btn-connect">Rebuild connectors</button>
+          </div>
+        </div>
+        <div class="live-box">
+          <div>
+            <h3>Live update</h3>
+            <p>Ledgerly has always logged sign-ins and payment approvals, but never exposed them. Ship one endpoint,
+              <code>GET /users/{username}/activity</code>, and rebuild with <code>synapse build --discover</code>.
+              The next question can use it, with no restart.</p>
+          </div>
+          <div class="live-actions">
+            <button id="btn-live">Ship endpoint + rebuild</button>
+            <button class="ghost hidden" id="btn-unlive">Undo</button>
+          </div>
+        </div>
+        <pre class="terminal hidden" id="terminal"></pre>
+        <div id="systems"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
