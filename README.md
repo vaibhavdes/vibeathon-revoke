@@ -14,7 +14,7 @@ the agent works only through those tools.
 
 2nd Brain Labs × Geek Room Vibe-a-thon · **Track 3: A copilot that works across two systems**
 
-**Video:** [youtu.be/JQCk0AJ4F1U](https://youtu.be/JQCk0AJ4F1U) (3½ min, every question answered live)
+**Video:** [youtu.be/JQCk0AJ4F1U](https://youtu.be/JQCk0AJ4F1U) (3½ min, every question answered live) · **Slides:** [PDF](docs/revoke-slides.pdf)
 
 ![Revoke console: leavers who still have access, with facts from both systems](docs/img/console.jpg)
 
